@@ -1,9 +1,20 @@
 import { Resend } from "resend";
-import { ENV } from "./env.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-export const resendClient = new Resend(ENV.RESEND_API_KEY);
+
+// Directly use process.env
+const API_KEY = process.env.RESEND_API_KEY;
+
+if (!API_KEY) {
+  console.warn("⚠️ RESEND_API_KEY not found. Email feature disabled.");
+}
+
+export const resendClient = API_KEY
+  ? new Resend(API_KEY)
+  : null;
 
 export const sender = {
-  email: ENV.EMAIL_FROM,
-  name: ENV.EMAIL_FROM_NAME,
+  email: process.env.EMAIL_FROM,
+  name: process.env.EMAIL_FROM_NAME,
 };

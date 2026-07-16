@@ -9,37 +9,82 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: [ENV.CLIENT_URL],
+    origin: [ENV.CLIENT_URL, "http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
     credentials: true,
   },
 });
 
-// apply authentication middleware to all socket connections
+// 🔥 userId -> socketId
+const userSocketMap = {};
+
 io.use(socketAuthMiddleware);
 
-// we will use this function to check if the user is online or not
 export function getReceiverSocketId(userId) {
-  return userSocketMap[userId];
+  return userSocketMap[Number(userId)];
 }
 
-// this is for storig online users
-const userSocketMap = {}; // {userId:socketId}
-
 io.on("connection", (socket) => {
-  console.log("A user connected", socket.user.fullName);
+  const userId = Number(socket.user.id);
 
-  const userId = socket.userId;
-  userSocketMap[userId] = socket.id;
+  console.log("Socket connected:", socket.user.fullName, userId);
 
-  // io.emit() is used to send events to all connected clients
-  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  if (userId) {
+    userSocketMap[userId] = socket.id;
+  }
 
-  // with socket.on we listen for events from clients
-  socket.on("disconnect", () => {
-    console.log("A user disconnected", socket.user.fullName);
-    delete userSocketMap[userId];
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  // Join user's own room for personalized events
+  socket.join(`user_${userId}`);
+
+  // 🔥 SEND ONLINE USERS
+  io.emit("getOnlineUsers", Object.keys(userSocketMap).map(Number));
+
+  // --- TYPING EVENTS ---
+  socket.on("typing", ({ receiverId, isGroup }) => {
+    if (isGroup) {
+      socket.to(`group_${receiverId}`).emit("userTyping", { 
+        userId, 
+        fullName: socket.user.fullName, 
+        groupId: receiverId 
+      });
+    } else {
+      const receiverSocketId = getReceiverSocketId(receiverId);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("userTyping", { 
+          userId, 
+          fullName: socket.user.fullName 
+        });
+      }
+    }
   });
+
+  socket.on("stopTyping", ({ receiverId, isGroup }) => {
+    if (isGroup) {
+      socket.to(`group_${receiverId}`).emit("userStoppedTyping", { userId, groupId: receiverId });
+    } else {
+      const receiverSocketId = getReceiverSocketId(receiverId);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("userStoppedTyping", { userId });
+      }
+    }
+  });
+
+  // --- ROOM JOINING (For Groups) ---
+  socket.on("joinGroup", (groupId) => {
+    socket.join(`group_${groupId}`);
+    console.log(`User ${socket.user.fullName} joined group: ${groupId}`);
+  });
+
+  socket.on("leaveGroup", (groupId) => {
+    socket.leave(`group_${groupId}`);
+    console.log(`User ${socket.user.fullName} left group: ${groupId}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Socket disconnected:", socket.user.fullName);
+    delete userSocketMap[userId];
+    io.emit("getOnlineUsers", Object.keys(userSocketMap).map(Number));
+  });
+
 });
 
 export { io, app, server };

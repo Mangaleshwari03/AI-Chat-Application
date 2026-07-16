@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { LogOutIcon, VolumeOffIcon, Volume2Icon } from "lucide-react";
+import { LogOut, VolumeOff, Volume2, ShieldCheck } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 
@@ -67,12 +67,23 @@ function ProfileHeader() {
 
         {/* BUTTONS */}
         <div className="flex gap-4 items-center">
+          {/* ADMIN BTN */}
+          {authUser?.role === "admin" && (
+            <button
+              className="text-indigo-400 hover:text-indigo-300 transition-colors"
+              onClick={() => window.location.href = '/admin'}
+              title="Admin Dashboard"
+            >
+              <ShieldCheck className="size-5" />
+            </button>
+          )}
+
           {/* LOGOUT BTN */}
           <button
             className="text-slate-400 hover:text-slate-200 transition-colors"
             onClick={logout}
           >
-            <LogOutIcon className="size-5" />
+            <LogOut className="size-5" />
           </button>
 
           {/* SOUND TOGGLE BTN */}
@@ -86,9 +97,9 @@ function ProfileHeader() {
             }}
           >
             {isSoundEnabled ? (
-              <Volume2Icon className="size-5" />
+              <Volume2 className="size-5" />
             ) : (
-              <VolumeOffIcon className="size-5" />
+              <VolumeOff className="size-5" />
             )}
           </button>
         </div>

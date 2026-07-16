@@ -14,6 +14,8 @@
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.10",
     "@arcjet/node": "^1.0.0-beta.10",
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.13.6",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
@@ -21,11 +23,12 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.10.1",
+    "mammoth": "^1.12.0",
     "mysql2": "^3.16.1",
+    "pdf-parse": "^2.4.5",
     "resend": "^6.0.2",
     "sequelize": "^6.37.7",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

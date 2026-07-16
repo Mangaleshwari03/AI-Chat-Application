@@ -1,0 +1,6 @@
+Error: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [404 Not Found] models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+    at handleResponseNotOk (file:///D:/major%20project/chatify-master/backend/node_modules/@google/generative-ai/dist/index.mjs:432:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async makeRequest (file:///D:/major%20project/chatify-master/backend/node_modules/@google/generative-ai/dist/index.mjs:401:9)
+    at async generateContent (file:///D:/major%20project/chatify-master/backend/node_modules/@google/generative-ai/dist/index.mjs:865:22)
+    at async file:///D:/major%20project/chatify-master/backend/src/controllers/group.controller.js:228:28

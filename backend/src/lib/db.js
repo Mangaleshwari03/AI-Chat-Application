@@ -1,15 +1,26 @@
-import mongoose from "mongoose";
+import { Sequelize } from "sequelize";
 import { ENV } from "./env.js";
+
+export const sequelize = new Sequelize(
+  ENV.DB_NAME,
+  ENV.DB_USER,
+  ENV.DB_PASSWORD,
+  {
+    host: ENV.DB_HOST,
+    dialect: "mysql",
+    logging: false
+  }
+);
 
 export const connectDB = async () => {
   try {
-    const { MONGO_URI } = ENV;
-    if (!MONGO_URI) throw new Error("MONGO_URI is not set");
+    await sequelize.authenticate();
+    console.log("MYSQL CONNECTED SUCCESSFULLY");
 
-    const conn = await mongoose.connect(ENV.MONGO_URI);
-    console.log("MONGODB CONNECTED:", conn.connection.host);
+    await sequelize.sync();
+    console.log("MYSQL TABLES SYNCED");
   } catch (error) {
-    console.error("Error connection to MONGODB:", error);
-    process.exit(1); // 1 status code means fail, 0 means success
+    console.error("Error connecting to MYSQL:", error);
+    process.exit(1); // 1 = fail
   }
 };

@@ -1,29 +1,64 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import { sequelize } from "../lib/db.js";
 
-const messageSchema = new mongoose.Schema(
+export const Message = sequelize.define(
+  "Message",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     senderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     receiverId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    groupId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     text: {
-      type: String,
-      trim: true,
-      maxlength: 2000,
+      type: DataTypes.TEXT,
+      allowNull: true,
+      validate: {
+        len: [0, 65000],
+      },
     },
     image: {
-      type: String,
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fileUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fileType: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    action: {
+      type: DataTypes.STRING,
+      defaultValue: "idle",
+      allowNull: true,
+    },
+    emotion: {
+      type: DataTypes.STRING,
+      defaultValue: "neutral",
+      allowNull: true,
+    },
+    isSeen: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    tableName: "messages",
+  }
 );
-
-const Message = mongoose.model("Message", messageSchema);
 
 export default Message;

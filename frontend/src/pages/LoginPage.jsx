@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import BorderAnimatedContainer from "../components/BorderAnimatedContainer";
-import { MessageCircleIcon, MailIcon, LoaderIcon, LockIcon } from "lucide-react";
-import { Link } from "react-router";
+import { MessageCircle, Mail, Loader, Lock } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -23,7 +23,7 @@ function LoginPage() {
               <div className="w-full max-w-md">
                 {/* HEADING TEXT */}
                 <div className="text-center mb-8">
-                  <MessageCircleIcon className="w-12 h-12 mx-auto text-slate-400 mb-4" />
+                  <MessageCircle className="w-12 h-12 mx-auto text-slate-400 mb-4" />
                   <h2 className="text-2xl font-bold text-slate-200 mb-2">Welcome Back</h2>
                   <p className="text-slate-400">Login to access to your account</p>
                 </div>
@@ -34,7 +34,7 @@ function LoginPage() {
                   <div>
                     <label className="auth-input-label">Email</label>
                     <div className="relative">
-                      <MailIcon className="auth-input-icon" />
+                      <Mail className="auth-input-icon" />
 
                       <input
                         type="email"
@@ -50,7 +50,7 @@ function LoginPage() {
                   <div>
                     <label className="auth-input-label">Password</label>
                     <div className="relative">
-                      <LockIcon className="auth-input-icon" />
+                      <Lock className="auth-input-icon" />
 
                       <input
                         type="password"
@@ -65,7 +65,7 @@ function LoginPage() {
                   {/* SUBMIT BUTTON */}
                   <button className="auth-btn" type="submit" disabled={isLoggingIn}>
                     {isLoggingIn ? (
-                      <LoaderIcon className="w-full h-5 animate-spin text-center" />
+                      <Loader className="w-full h-5 animate-spin text-center" />
                     ) : (
                       "Sign In"
                     )}
